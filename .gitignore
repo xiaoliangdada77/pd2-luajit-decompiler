@@ -1,0 +1,15 @@
+# decompiler output byproducts (generated from game assets)
+output/
+out/
+*.ljbc
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# editor/os
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
