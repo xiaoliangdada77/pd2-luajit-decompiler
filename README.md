@@ -60,11 +60,30 @@ Jaccard similarity), producing a mirrored `named/<path>.lua` tree.
 ## Layout
 
 ```
-ljd/                 Luajit-Decompiler (ZNix fork), unmodified
-pd2/bundle.py        YAOI crate reader (+ zlib)
-pd2decompile.py      main: crate -> bytecode -> lua source
-map_names.py         attach real asset paths to output
+pd2/bundle.py        YAOI crate reader (+ zlib)      [original, this repo]
+pd2decompile.py      main: crate -> bytecode -> lua  [original, this repo]
+map_names.py         attach real asset paths         [original, this repo]
+output/              decompiled results (see index below)
+examples/            a couple of sample outputs
+ljd/                 *** NOT INCLUDED *** third-party engine, see Dependencies
 ```
+
+## Dependencies (third-party — not vendored)
+
+The decompilation engine is **ljd (Luajit-Decompiler, ZNix fork)**, which is
+**not my code and is not included in this repository**. This repo only ships
+the PAYDAY 2-specific parts (bundle reader + driver + name mapper). To run:
+
+```bash
+git clone https://gitlab.com/znixian/luajit-decompiler.git
+cp -r luajit-decompiler/ljd ./ljd      # so that ./ljd/__init__.py exists
+pip install --upgrade ljd                # (not required if you copied ljd/)
+```
+
+- Upstream: https://gitlab.com/znixian/luajit-decompiler  (fork of Aussiemon/ljd)
+- License: MIT, © 2013 Andrian Nord
+- `pd2decompile.py` expects the `ljd` package importable from the repo root
+  (i.e. `./ljd/`).
 
 ## Usage
 
@@ -93,6 +112,30 @@ out/named/<path>.lua         path-recovered mirror (from map_names.py)
 `assets/scripts.crate` → **1646 / 1646** LuaJIT chunks decompiled to Lua
 source (verified byte-identical to reference output for the majority of
 files).
+
+## Decompiled results in this repo
+
+`output/` contains the full decompiled set from the **retail PAYDAY 2
+`assets/scripts.crate`** (1646 scripts):
+
+```
+output/lua/<hash>_<idx>.lua   all 1646 decompiled scripts (name = name-hash_ordinal)
+output/named/<path>.lua       ~1516 scripts with real asset paths recovered
+output/index.tsv              full index: ordinal | hash | ok | file | bytecode size
+output/name_map.tsv           script -> recovered path mapping (method + score)
+examples/                     two readable samples
+```
+
+**Index files**
+
+| file | columns |
+|------|---------|
+| `output/index.tsv` | `entry`, `hash`, `ok`, `out`, `size` |
+| `output/name_map.tsv` | `script`, `method`(exact/fuzzy), `score`, `path` |
+
+Pick any row of `index.tsv` to find the file; `name_map.tsv` tells you which
+game script each decompiled file corresponds to.
+
 
 ## Notes / limits
 

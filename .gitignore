@@ -1,7 +1,11 @@
-# decompiler output byproducts (generated from game assets)
-output/
-out/
+# ljd (third-party Luajit-Decompiler engine) is NOT vendored here.
+# Fetch it yourself; see README "Dependencies" section.
+ljd/
+
+# raw bytecode byproducts
 *.ljbc
+out/
+bc/
 
 # python
 __pycache__/
